@@ -1,3 +1,4 @@
+//Wersja z operacjami 012
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -9,6 +10,7 @@ int akumulator[ROZMIAR_TABLICY - 1] = {0};
 int wielomian[ROZMIAR_TABLICY] = {0};
 char wiersz[MAXWIERSZ] = {0};
 char znak;
+int operacja = 0;
 
 void wczytaj_wiersz() {
     int i;
@@ -16,26 +18,33 @@ void wczytaj_wiersz() {
         wielomian[i] = 0;
     }
     i = 0;
-    while (wiersz[i] != 0) {
+    while (i < MAXWIERSZ) {
         wiersz[i] = 0;
         i++;
     }
     i = 0;
-    while ((znak = getchar()) != '\n' && i < MAXWIERSZ) {
+    while ((znak = (char) getchar()) != '\n' && i < MAXWIERSZ) {
         if (znak != ' ' && znak != '\n') {
             wiersz[i] = znak;
             i++;
         }
     }
 }
-
 void zamień_wiersz_na_wielomian() {
     wczytaj_wiersz();
     int cyfra = 0;
     int a = 1;
     int i = 0;
     int potęga = 0;
-    wielomian[ROZMIAR_TABLICY - 1] = wiersz[0];
+    if (wiersz[0] == '+') {
+        wielomian[ROZMIAR_TABLICY - 1] = 1;
+    }
+    else if (wiersz[0] == '*') {
+        wielomian[ROZMIAR_TABLICY - 1] = 2;
+    }
+    else {
+        wielomian[ROZMIAR_TABLICY - 1] = 0;
+    }
     while ((znak = wiersz[i]) != 0 && i < MAXWIERSZ) {
         if (znak == '+') {
             a = 1;
@@ -47,7 +56,7 @@ void zamień_wiersz_na_wielomian() {
         }
         else if (znak >= '0' && znak <= '9') {
             cyfra *= 10;
-            cyfra += znak - '0';
+            cyfra += (int) znak - (int) '0';
             if (wiersz[i + 1] < '0' || wiersz[i + 1] > '9') {
                 cyfra *= a;
                 if (wiersz[i + 1] != 'x') {
@@ -67,7 +76,7 @@ void zamień_wiersz_na_wielomian() {
                             i += 4;
                         }
                         else {
-                            potęga = wiersz[i + 3] - '0';
+                            potęga = (int) wiersz[i + 3] - (int) '0';
                             wielomian[potęga] += cyfra;
                             cyfra = 0;
                             i += 3;
@@ -80,7 +89,7 @@ void zamień_wiersz_na_wielomian() {
         else if (znak == 'x') {
             cyfra = a;
             if (wiersz[i + 1] != '^') {
-                wielomian[0] += cyfra;
+                wielomian[1] += cyfra;
                 cyfra = 0;
             }
             else {
@@ -90,7 +99,7 @@ void zamień_wiersz_na_wielomian() {
                     i += 3;
                 }
                 else {
-                    potęga = wiersz[i + 2] - '0';
+                    potęga = (int) wiersz[i + 2] - (int) '0';
                     wielomian[potęga] += cyfra;
                     cyfra = 0;
                     i += 2;
@@ -214,20 +223,21 @@ void wypisywanie_wielomianu() {
 
 int main() {
     zamień_wiersz_na_wielomian();
-    int operacja = wielomian[ROZMIAR_TABLICY - 1];
-    while (operacja != '.') {
-        if (operacja == '+') {
+    operacja = wielomian[ROZMIAR_TABLICY - 1];
+    while (operacja != 0) {
+        if (operacja == 1) {
             dodawanie();
             wypisywanie_wielomianu();
         }
-        if (operacja == '*') {
+        if (operacja == 2) {
             mnozenie();
             wypisywanie_wielomianu();
         }
         zamień_wiersz_na_wielomian();
-        if ((operacja = wielomian[ROZMIAR_TABLICY - 1]) != '.') {
+        if ((operacja = wielomian[ROZMIAR_TABLICY - 1]) != 0) {
             printf("\n");
         }
     }
+    printf("\n");
     return 0;
 }
