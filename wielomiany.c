@@ -1,4 +1,3 @@
-//wersja z operacjami +*.
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -113,7 +112,9 @@ void mnozenie() {
     int tablica_pomocnicza[ROZMIAR_TABLICY - 1] = {0};
     for (int i = 0; i < ROZMIAR_TABLICY - 1; i++) {
         for (int j = 0; j < ROZMIAR_TABLICY - 1; j++) {
-            tablica_pomocnicza[i + j] += akumulator[i] * wielomian[j];
+            if (i + j < ROZMIAR_TABLICY - 1) {
+                tablica_pomocnicza[i + j] += akumulator[i] * wielomian[j];
+            }
         }
     }
     for (int z = 0; z < ROZMIAR_TABLICY - 1; z++) {
@@ -121,7 +122,7 @@ void mnozenie() {
     }
 }
 void wypisywanie_wielomianu() {
-    int s = ROZMIAR_TABLICY - 1;
+    int s = ROZMIAR_TABLICY - 2;
     bool czypierwsze = false;
     while (s >= 0 && akumulator[s] == 0){
         s--;
